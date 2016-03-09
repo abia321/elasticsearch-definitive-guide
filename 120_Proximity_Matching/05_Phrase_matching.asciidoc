@@ -1,5 +1,5 @@
-[[短语匹配]]
-=== Phrase Matching
+=== 短语匹配
+
 在某些时候，`match` query对于标准的全文检索是一种go-to的查询，而`match_phrase` query((("proximity matching", "phrase matching")))((("phrase matching")))((("match_phrase query"))) 则是一种你需要指定搜索词附近相关词组的查询：
 
 [source,js]
