@@ -1,5 +1,5 @@
-[[短语匹配]]
-=== Phrase Matching
+[[Phrase Matching]]
+=== 短语匹配
 在某些时候，`match` query对于标准的全文检索是一种go-to的查询，而`match_phrase` query((("proximity matching", "phrase matching")))((("phrase matching")))((("match_phrase query"))) 则是一种你需要指定搜索词附近相关词组的查询：
 
 [source,js]
@@ -15,12 +15,12 @@ GET /my_index/my_type/_search
 --------------------------------------------------
 // SENSE: 120_Proximity_Matching/05_Match_phrase_query.json
 
-就像`match` query，`match_phrase` query首先将查询字符串解析成一列项，然后对这些项进行搜索，但只保留那些包含全部搜索项，且各项位置与搜索项位置相同的文档。比如对于`quick fox`的短语搜索可能不会匹配到任何文档，因为没有文档包含的`quick`词之后紧跟着`fox`。
+就像 `match` query，`match_phrase` query 首先将查询字符串解析成一列项，然后对这些项进行搜索，但只保留那些包含全部搜索项，且各项位置与搜索项位置相同的文档。比如对于 `quick fox` 的短语搜索可能不会匹配到任何文档，因为没有文档包含的 `quick` 词之后紧跟着 `fox` 。
 
 [TIP]
 ==================================================
 
-`match_phrase` query 同样可以被写作是一种对于`phrase`的`match` query:
+`match_phrase` query 同样可以被写作是一种对于 `phrase` 的 `match` query:
 
 [source,js]
 --------------------------------------------------
@@ -37,7 +37,7 @@ GET /my_index/my_type/_search
 
 ==== 项的位置
 
-当一个字符串被分词后，这个分词器不但会((("phrase matching", "term positions")))((("match_phrase query", "position of terms")))((("position-aware matching")))返回一列项，而且还会返回原始字符串各项之间的位置或者顺序关系：
+当一个字符串被分析后，这个分词器不但会((("phrase matching", "term positions")))((("match_phrase query", "position of terms")))((("position-aware matching")))返回一列项，而且还会返回原始字符串各项之间的位置或者顺序关系：
 
 [source,js]
 --------------------------------------------------
@@ -79,25 +79,25 @@ Quick brown fox
 --------------------------------------------------
 <1> `position` 代表各项在原始字符串中的位置.
 
-位置信息可以被存储在倒排索引中，如同`match_phrase` query这类对词语位置敏感的查询，就可以利用位置信息去匹配查询那些中间确实不夹杂其他词组，而又包含所有查询项且各项顺序也与我们搜索指定一致的文档。
+位置信息可以被存储在倒排索引中，如同 `match_phrase` query 这类对词语位置敏感的查询，就可以利用位置信息去匹配查询那些中间确实不夹杂其他词组，而又包含所有查询项且各项顺序也与我们搜索指定一致的文档。
 
 ==== 什么是短语
 
-一个被认定为对于短语``quick brown fox,''匹配的文档，必须满足以下这些要求：
+一个被认定为对于短语 ``quick brown fox,'' 匹配的文档，必须满足以下这些要求：
 
 * `quick`, `brown`, and `fox` 需要全部出现在域中.
 
-* `brown` 的`position`相对于`quick`应该为 `1`.
+* `brown` 的位置相对于`quick`应该为 `1`.
 
-* `fox` 的`position`相对于`quick`应该为 `2`.
+* `fox` 的位置相对于`quick`应该为 `2`.
 
-如果以上任何一个选项不成立，则该文档不能认定匹配。
+如果以上任何一个选项不成立，则该文档不能认定为匹配。
 
 [TIP]
 ==================================================
 
-本质上来讲，`match_phrase` query是利用一种低级别的`span` query去做词语位置敏感的匹配。((("match_phrase query", "use of span queries for position-aware matching")))((("span queries")))Span queries 是一种项级别的查询，所以它们没有分词阶段；它们只对指定的项进行搜索。
+本质上来讲，`match_phrase` query 是利用一种低级别的 `span` query 去做词语位置敏感的匹配。((("match_phrase query", "use of span queries for position-aware matching")))((("span queries")))Span queries 是一种项级别的查询，所以它们没有分词阶段；它们只对指定的项进行搜索。
 
-值得庆幸的是，`match_phrase` query已经足够优秀，大多数人是不会直接使用`span` queries。然而，如同专利搜索这类需要明确指定域的查询，还是会采用这种低级别查询去执行非常具体而又精心构造的位置搜索。
+值得庆幸的是，`match_phrase` query 已经足够优秀，大多数人是不会直接使用 `span` queries。然而，如同专利搜索这类需要明确指定域的查询，还是会采用这种低级别查询去执行非常具体而又精心构造的位置搜索。
 
 ==================================================
