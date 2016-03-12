@@ -1,12 +1,8 @@
-[[slop]]
-=== Mixing It Up
+=== 混合起来
 
-Requiring exact-phrase matches ((("proximity matching", "slop parameter")))may be too strict a constraint. Perhaps we _do_
-want documents that contain ``quick brown fox'' to be considered a match for
-the query ``quick fox,'' even though the positions aren't exactly equivalent.
+需要准确的短语去匹配((("proximity matching", "slop parameter")))可能是过于严格的约束。我们也许只需要对包含 ``quick brown fox'' 的文档，进行 ``quick fox,'' 的匹配，即使在位置上不是严格的相等。 
 
-We can introduce a degree ((("slop parameter")))of flexibility into phrase matching by using the
-`slop` parameter:
+因此我们通过 `slop` 参数，引入一种较为灵活的短语匹配：
 
 [source,js]
 --------------------------------------------------
@@ -24,13 +20,9 @@ GET /my_index/my_type/_search
 --------------------------------------------------
 // SENSE: 120_Proximity_Matching/10_Slop.json
 
-The `slop` parameter tells the `match_phrase` query how((("match_phrase query", "slop parameter"))) far apart terms are
-allowed to be while still considering the document a match. By _how far
-apart_ we mean _how many times do you need to move a term in order to make
-the query and document match_?
+这个 `slop`  参数告诉 `match_phrase` 查询，文档被认定为一次匹配时，允许项之间可以有多远的距离((("match_phrase query", "slop parameter")))。多远距离，意味着，你需要移动一个项多少次才能达到此次查询与文档的匹配？ 
 
-We'll start with a simple example. To make the query `quick fox` match
-a document containing `quick brown fox` we need a `slop` of just `1`:
+我们以一个简单例子开头。为了令包含 `quick brown fox` 的文档被 `quick fox` 查询匹配，我们需要将 `slop` 设置为 `1`:  
 
 
                 Pos 1         Pos 2         Pos 3
@@ -40,11 +32,9 @@ a document containing `quick brown fox` we need a `slop` of just `1`:
     Query:      quick         fox
     Slop 1:     quick                 ↳     fox
 
-Although all words need to be present in phrase matching, even when using `slop`,
-the words don't necessarily need to be in the same sequence in order to
-match. With a high enough `slop` value, words can be arranged in any order.
+即使我们使用了 `slop` 参数,分词间可以不再为了匹配而要保持同样的序列。但所有的分词仍然需要在短语匹配中出现。当 `slop` 值足够高时，分词即可以任何顺序排列。	
 
-To make the query `fox quick` match our document, we need a `slop` of `3`:
+为了令 `fox quick` 的查询匹配我们文档，我们需要将 `slop` 设置为 `3`:
 
                 Pos 1         Pos 2         Pos 3
     -----------------------------------------------
@@ -55,7 +45,5 @@ To make the query `fox quick` match our document, we need a `slop` of `3`:
     Slop 2:     quick      ↳  fox
     Slop 3:     quick                 ↳     fox
 
-<1> Note that `fox` and `quick` occupy the same position in this step.
-    Switching word order from `fox quick` to `quick fox` thus requires two
-    steps, or a `slop` of `2`.
+<1> 注意在这一步中 `fox` 和 `quick` 占据了同样的位置，因此将 `fox quick` 的顺序转换为 `quick fox` 需要两步，或者将 `slop` 设置为 `2`。  
 
